@@ -1,33 +1,57 @@
 import java.util.*;
 
 public class Blackjack {
-
+    static Colors color = new Colors();
     public static ArrayList<String> suits = new ArrayList<String>() {
         {
-            add("h");
-            add("d");
-            add("s");
-            add("c");
+            add(color.Red);
+            add(color.Yellow);
+            add(color.Cyan);
+            add(color.Green);
         }
     };
+    //Cards, value of cards, and cards with suites to differentiate.
     public static ArrayList<Integer> num = new ArrayList<>();
     public static ArrayList<String> cards = new ArrayList<>();
-    public static ArrayList<String> hand = new ArrayList<>();
     public static ArrayList<Integer> value = new ArrayList<>();
+
+    public static ArrayList<String> hand = new ArrayList<>();
 
     public static Random rand = new Random();
     public static int total = 0;
     public static void main(String[] args) {
-
-        System.out.println("");
+        String c;
+        System.out.println(color.Reset);
+        
         
         for(int i = 0; i<suits.size(); i++){
             for(int j = 1; j<=13; j++){
-                value.add(j);
-                cards.add(j + suits.get(i));
-                num.add(i*13+j);
+
+                if(j<11){
+                    value.add(j);
+
+                    c = (suits.get(i) + j +color.Reset);
+                }
+                else{
+                    value.add(10);
+                    if(j==11){
+                        c = (suits.get(i) + "J" + color.Reset);
+                    }
+                    else if(j==12){
+                        c = (suits.get(i) + "Q" + color.Reset);
+                    }
+                    else{
+                        c = (suits.get(i) + "K" + color.Reset);
+                    }
+                    
+                }
+                
+                cards.add(c);
+                num.add((i*13+j));
+
             }
         }
+        
         System.out.println(cards);
         System.out.println(num);
         
@@ -38,17 +62,23 @@ public class Blackjack {
 
         System.out.println(hand + " " + total);
 
-        while(total <= 21){
-            break;
+        while(total <= 400){
+            hand.add(chooseCard());
+            System.out.println(hand + " " + total);
         }
     }
-
+    
+    /**
+     * 
+     * @return A random card within the deck, and removes that card for future pulls.
+     */
     public static String chooseCard(){
         String card;
         int i = rand.nextInt(num.size()-1);
-        card = cards.get(i);
+        card = cards.get(num.get(i));
+        total += value.get(num.get(i));
         num.remove(i);
-        total += value.get(i);
+        //System.out.println(num);
         return card;
     } 
 
