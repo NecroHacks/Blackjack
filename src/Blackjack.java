@@ -58,20 +58,6 @@ public class Blackjack {
             }
         }
         
-        System.out.println(cards);
-        System.out.println(num);
-        
-        //player
-        //draws two cards
-        hand.add(chooseCard());
-        hand.add(chooseCard());
-
-        System.out.println(hand + " " + total);
-
-        while(total < 17){
-            hand.add(chooseCard());
-            System.out.println(hand + " " + total);
-        }
     }
     
     /**
