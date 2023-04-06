@@ -197,6 +197,7 @@ public class Blackjack {
         return total;
     }
 
+    //Starts the play
     public static boolean play(){   
         System.out.println("Hit(h) or Stand(s)?");
         String act = in.nextLine();
@@ -214,6 +215,7 @@ public class Blackjack {
 
     }
 
+    //I feel like these are self explanitory
     public static void win(){
         System.out.println("You win!");
         //Win bet x2
