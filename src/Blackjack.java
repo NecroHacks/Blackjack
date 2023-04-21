@@ -1,6 +1,12 @@
 import java.awt.Color;
 import java.text.BreakIterator;
 import java.util.*;
+import java.io.*;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+//TODO: change System.out.println(); to use GFG.java
 
 public class Blackjack {
     static Colors color = new Colors();
@@ -30,11 +36,18 @@ public class Blackjack {
     public static int botAce = 0;
     public static int bet;
     public static int bal = 100;
-    public static void main(String[] args) {
+
+    public static void main(String[] args) {}
+
+    public static void game(JFrame frame){
         reset();
         System.out.println(cards);
         System.out.println(num);
         
+        // JTextField textFieldUserName = new JTextField(50);
+        // textFieldUserName.setBounds(50,50,150,20);
+        // textFieldUserName.setBackground(Color.red);
+        // frame.add(textFieldUserName);
 
         //player
         //draws two cards
@@ -42,81 +55,110 @@ public class Blackjack {
         // hand.add(chooseCard());
         // hand.add(chooseCard());
 
-        System.out.println("Press enter to continue...");
+        //System.out.println("Press enter to continue...");
+        JTextField totalBet = new JTextField(" ");
+        JTextArea prompt = new JTextArea("Enter bet:");
+        totalBet.setBounds(150,200,200,25); //(xpos, ypos, xsize, ysize)
+        prompt.setBounds(150,175,200,25);
 
-        
-            //init bet
-            while(true){
-                try{
-                    in.nextLine();
-                    System.out.println("Enter bet: ");
-                    bet = in.nextInt();
-                    in.nextLine();
-                    if(bet>0 && bet<=bal){
-                        break;
-                    }
-                    System.out.println(color.Red + "Enter a valid number(0 - "+ bal + ")" + color.Reset);
+        //totalBet.setBackground(Color.black); //Textbox
+        //totalBet.setForeground(Color.white); //Text
 
-                }
-                catch(InputMismatchException e){
-                    System.out.println(color.Red + "Enter a valid number(0-"+ bal + ")" + color.Reset);
-                    
-                }
-            }
+        frame.add(totalBet);
+        frame.add(prompt);
+        totalBet.setText(null);
+        //prompt.setText("Enter bet:");
+        //totalBet.
 
+        totalBet.setVisible(true);
+        prompt.setVisible(true);
+        prompt.setEditable(false);
+        frame.setVisible(true);
+    }
 
-            reset();
-            total = 0;
-            hand.add(chooseCard(true));
-            hand.add(chooseCard(true));
-    
-            botHand.add(chooseCard(false));
-            
-
-            System.out.println(hand + " " + total);
-            System.out.println(botHand + " " + botTotal);
-
-            while(total < 21){
-                if(!play()){
+    public static void round(){
+        //init bet
+        while(true){
+            try{
+                in.nextLine();
+                //totalBet.setText("Enter bet: ");
+                //totalBet.setVisible(true);
+                bet = in.nextInt();
+                in.nextLine();
+                if(bet>0 && bet<=bal){
                     break;
                 }
-                System.out.println(hand + " " + total);
+                System.out.println(color.Red + "Enter a valid number(0 - "+ bal + ")" + color.Reset);
+
+            }
+            catch(InputMismatchException e){
+                System.out.println(color.Red + "Enter a valid number(0-"+ bal + ")" + color.Reset);
                 
             }
-            
-            if(total == 21){
-                if(botTotal == 21){
-                    tie();
-                    
-                }
-                else{
-                    win();
-                    
-                }
+        }
+
+
+        reset();
+        total = 0;
+        botTotal = 0;
+        hand.add(chooseCard(true));
+        hand.add(chooseCard(true));
+
+        botHand.add(chooseCard(false));
+        
+
+        System.out.println(hand + " " + total);
+        System.out.println(botHand + " " + botTotal);
+
+        while(total < 21){
+            if(!play()){
+                break;
             }
-            else if(total > 21){
-                lose();
-                              
+            System.out.println(hand + " " + total);
+            
+        }
+        //add bot
+        while(botTotal < 17){
+            botHand.add(chooseCard(false));
+            System.out.println(botHand + " " + botTotal);
+            
+        }
+
+        if(total == 21){
+            if(botTotal == 21){
+                tie();
+                
             }
             else{
-                if(botTotal>21){
-                    win();
-
-                }
-                else if(total>botTotal){
-                    win();
-
-                }
-                else if(total==botTotal){
-                    tie();
-
-                }
-                else{
-                    lose();
-
-                }
+                win();
+                
             }
-        
+        }
+        else if(total > 21){
+            lose();
+                          
+        }
+        else{
+            if(botTotal>21){
+                win();
+
+            }
+            else if(total>botTotal){
+                win();
+
+            }
+            else if(total==botTotal){
+                tie();
+
+            }
+            else{
+                lose();
+
+            }
+        }
+
+        round();
+    
     }
     
     /**
@@ -152,7 +194,7 @@ public class Blackjack {
         else{
             if(number ==  1){
                 botTotal += 11;
-                ace ++;
+                botAce ++;
             }
             else{
                 botTotal += number;
@@ -160,9 +202,10 @@ public class Blackjack {
 
         }
 
-        if(botTotal > 21 && ace > 0){
+        if(botTotal > 21 && botAce > 0){
             botTotal -= 10;
-            ace--;
+            botAce--;
+
         }
 
         return botTotal;
@@ -179,7 +222,7 @@ public class Blackjack {
         }
 
         else{
-            if(number ==  1){
+            if(number == 1){
                 total += 11;
                 ace ++;
             }
@@ -192,6 +235,7 @@ public class Blackjack {
         if(total > 21 && ace > 0){
             total -= 10;
             ace--;
+            //System.out.println("djkghjsdfghjfdsgjkdshngkjdsfhbjkdsfjd");
         }
 
         return total;
@@ -240,8 +284,11 @@ public class Blackjack {
         String c;
         System.out.println(color.Reset);
         hand.clear();
+        botHand.clear();
         num.clear();
-        
+        cards.clear();
+        ace = 0;
+        botAce = 0;
         for(int i = 0; i<suits.size(); i++){
             for(int j = 1; j<=13; j++){
 
