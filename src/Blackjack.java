@@ -54,48 +54,74 @@ public class Blackjack {
         
         // hand.add(chooseCard());
         // hand.add(chooseCard());
+        JTextField moneys = new JTextField();
+        JTextField betDisplay = new JTextField();
+
+        betDisplay.setBounds(400,0,100,25);
+        betDisplay.setVisible(true);
+        betDisplay.setEditable(false);
+
+        moneys.setBounds(0,0,100,25);
+        moneys.setVisible(true);
+        moneys.setEditable(false);
+
+        frame.add(betDisplay);
+        frame.add(moneys);
+        betDisplay.setText(""+bet);
+        moneys.setText(""+bal);
 
         //System.out.println("Press enter to continue...");
+        JButton confirm = new JButton("Confirm");
         JTextField totalBet = new JTextField(" ");
         JTextArea prompt = new JTextArea("Enter bet:");
+        confirm.setBounds(150,225,200,25);
         totalBet.setBounds(150,200,200,25); //(xpos, ypos, xsize, ysize)
-        prompt.setBounds(150,175,200,25);
+        prompt.setBounds(150,150,200,50); 
 
         //totalBet.setBackground(Color.black); //Textbox
         //totalBet.setForeground(Color.white); //Text
 
         frame.add(totalBet);
         frame.add(prompt);
+        frame.add(confirm);
         totalBet.setText(null);
-        //prompt.setText("Enter bet:");
-        //totalBet.
 
-        totalBet.setVisible(true);
-        prompt.setVisible(true);
+        
         prompt.setEditable(false);
         frame.setVisible(true);
+
+        confirm.addActionListener(new ActionListener(){  
+            public void actionPerformed(ActionEvent e){  
+                //code goes here
+                try{
+                    if(totalBet.getText().isEmpty() || Integer.parseInt(totalBet.getText()) < 0 || Integer.parseInt(totalBet.getText()) > bal){
+                        throw new Exception();
+                    }
+                    else{
+                        bet = Integer.parseInt(totalBet.getText());
+                        betDisplay.setText(""+bet);
+                        confirm.setVisible(false);
+                        totalBet.setVisible(false);
+                        prompt.setVisible(false); 
+                    }
+                }
+                catch(Exception ex){
+                    prompt.setText("Enter bet:\nEnter a number between 0 and "+bal);
+                }
+            }
+        });
+
+
+
+    }
+
+    public static void init(){
+
     }
 
     public static void round(){
         //init bet
-        while(true){
-            try{
-                in.nextLine();
-                //totalBet.setText("Enter bet: ");
-                //totalBet.setVisible(true);
-                bet = in.nextInt();
-                in.nextLine();
-                if(bet>0 && bet<=bal){
-                    break;
-                }
-                System.out.println(color.Red + "Enter a valid number(0 - "+ bal + ")" + color.Reset);
 
-            }
-            catch(InputMismatchException e){
-                System.out.println(color.Red + "Enter a valid number(0-"+ bal + ")" + color.Reset);
-                
-            }
-        }
 
 
         reset();
@@ -115,7 +141,6 @@ public class Blackjack {
                 break;
             }
             System.out.println(hand + " " + total);
-            
         }
         //add bot
         while(botTotal < 17){
