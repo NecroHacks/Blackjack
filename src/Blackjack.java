@@ -51,6 +51,10 @@ public class Blackjack {
     private static JButton hitButton = new JButton();
     private static JButton standButton = new JButton();
     private static boolean play;
+    private static JTextField moneys = new JTextField();
+    private static JTextField betDisplay = new JTextField();
+
+    private static JTextField message = new JTextField();
     public static void main(String[] args) {}
 
     public static void game(JFrame f){
@@ -66,10 +70,14 @@ public class Blackjack {
 
         hitButton.setText("Hit");
         standButton.setText("Stand");
-        hitButton.setBounds(100,200,100,50);
-        standButton.setBounds(300,200,100,50);
+        hitButton.setBounds(100,200,100,30);
+        standButton.setBounds(300,200,100,30);
 
+        message.setBounds(200,350, 100, 30);
+        message.setEditable(false);
+        message.setVisible(false);
 
+        frame.add(message);
         frame.add(hitButton);
         frame.add(standButton);
         hitButton.setVisible(false);
@@ -116,8 +124,6 @@ public class Blackjack {
         frame.add(playerCardsBox);
         // hand.add(chooseCard());
         // hand.add(chooseCard());
-        JTextField moneys = new JTextField();
-        JTextField betDisplay = new JTextField();
 
         betDisplay.setBounds(400,0,100,25);
         betDisplay.setVisible(true);
@@ -219,14 +225,16 @@ public class Blackjack {
                         standButton.setVisible(false);
                         while(botTotal < 17){
                             botHand.add(chooseCard(false));
-                            System.out.println(botHand + " " + botTotal);
+                            //System.out.println(botHand + " " + botTotal);
                         }
+                        message.setVisible(true);
+                        check();
                     }
                 }
                 catch(Exception ex){
                     System.err.println("Something went wrong.");
                 }
-                System.out.println(hand + " " + total);
+                //System.out.println(hand + " " + total);
             }
         });
         standButton.addActionListener(new ActionListener(){  
@@ -237,24 +245,25 @@ public class Blackjack {
                     standButton.setVisible(false);
                     while(botTotal < 17){
                         botHand.add(chooseCard(false));
-                        System.out.println(botHand + " " + botTotal);
-                        
+                        //System.out.println(botHand + " " + botTotal);
                     }
+                    message.setVisible(true);
+                    check();
                 }
                 catch(Exception ex){
                     System.err.println("Something went wrong.");
                 }
-                System.out.println(hand + " " + total);
+                //System.out.println(hand + " " + total);
             }
         });
 
-        System.out.println(hand + " " + total);
-        System.out.println(botHand + " " + botTotal);
         
-        //add bot
+        //round();
+    
+    }
+    
+    public static String check(){
         
-         
-
         if(total == 21){
             if(botTotal == 21){
                 tie();
@@ -287,11 +296,12 @@ public class Blackjack {
 
             }
         }
-        
-        //round();
-    
+        moneys.setText("Bal: "+bal);
+        betDisplay.setText("Bet: 0");
+        bet = 0;
+        return null;
     }
-    
+
     /**
      * 
      * @return A random card within the deck, and removes that card for future pulls.
@@ -417,18 +427,21 @@ public class Blackjack {
     public static void win(){
         //System.out.println("You win!");
         //Win bet x2
+        message.setText("You win!");
         bal += bet;
     }
 
     public static void lose(){
         //System.out.println("You lose");
         //Lose bet
+        message.setText("You lose.");
         bal -= bet;
     }
 
     public static void tie(){
         //System.out.println("You tied");
         //Return ballance (do nothing)
+        message.setText("You tied");
     }
 
     /**
@@ -437,7 +450,7 @@ public class Blackjack {
     public static void reset(){
         String c;
 
-        System.out.println(color.Reset);
+        //System.out.println(color.Reset);
 
         hand.clear();
         botHand.clear();

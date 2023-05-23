@@ -12,8 +12,8 @@ public class GFG extends JFrame{
             JButton startButton = new JButton("Start Game"); // creating instance of JButton
             
             startButton.setBounds(150, 200, 220, 50); // x axis, y axis, width, height
-            startButton.setBackground(Color.BLUE); // box color    
-            startButton.setForeground(Color.RED); // text color
+            startButton.setBackground(Color.gray); // box color    
+            startButton.setForeground(Color.green); // text color
             textField.setBounds(50,50, 150,20); 
 
             // JTextField textFieldUserName = new JTextField(50);
