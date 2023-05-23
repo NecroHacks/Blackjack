@@ -53,6 +53,7 @@ public class Blackjack {
     private static boolean play;
     private static JTextField moneys = new JTextField();
     private static JTextField betDisplay = new JTextField();
+    private static JButton resetButton = new JButton();
 
     private static JTextField message = new JTextField();
     public static void main(String[] args) {}
@@ -73,10 +74,57 @@ public class Blackjack {
         hitButton.setBounds(100,200,100,30);
         standButton.setBounds(300,200,100,30);
 
-        message.setBounds(200,350, 100, 30);
+        hitButton.addActionListener(new ActionListener(){  
+            public void actionPerformed(ActionEvent e){  
+                //code goes here
+                try{
+                    chooseCard(true);
+                    if(total>21){
+                        hitButton.setVisible(false);
+                        standButton.setVisible(false);
+                        while(botTotal < 17){
+                            botHand.add(chooseCard(false));
+                            //System.out.println(botHand + " " + botTotal);
+                        }
+                        message.setVisible(true);
+                        check();
+                    }
+                }
+                catch(Exception ex){
+                    System.err.println("Something went wrong.");
+                }
+                //System.out.println(hand + " " + total);
+            }
+        });
+        standButton.addActionListener(new ActionListener(){  
+            public void actionPerformed(ActionEvent e){  
+                //code goes here
+                try{
+                    hitButton.setVisible(false);
+                    standButton.setVisible(false);
+                    while(botTotal < 17){
+                        botHand.add(chooseCard(false));
+                        //System.out.println(botHand + " " + botTotal);
+                    }
+                    message.setVisible(true);
+                    check();
+                }
+                catch(Exception ex){
+                    System.err.println("Something went wrong.");
+                }
+                //System.out.println(hand + " " + total);
+            }
+        });
+
+        message.setBounds(200, 350, 100, 30);
         message.setEditable(false);
         message.setVisible(false);
 
+        resetButton.setBounds(200, 400, 100, 30);
+        resetButton.setText("Next round");
+        resetButton.setVisible(false);
+
+        frame.add(resetButton);
         frame.add(message);
         frame.add(hitButton);
         frame.add(standButton);
@@ -157,6 +205,30 @@ public class Blackjack {
         prompt.setEditable(false);
         frame.setVisible(true);
 
+        resetButton.addActionListener(new ActionListener(){  
+            public void actionPerformed(ActionEvent e){  
+                //code goes here
+                try{
+                    totalBet.setVisible(true);
+                    prompt.setVisible(true);
+                    confirm.setVisible(true);
+                    playerCardsPrompt.setVisible(false);
+                    playerCardsBox.setVisible(false);
+                    playerTotalBox.setVisible(false);
+                    botCardsPrompt.setVisible(false);
+                    botCardsBox.setVisible(false);
+                    botTotalBox.setVisible(false);
+                    message.setVisible(false);
+                    resetButton.setVisible(false);
+                    
+                }
+                catch(Exception ex){
+                    System.err.println("Something went wrong.");
+                }
+                //System.out.println(hand + " " + total);
+            }
+        });
+
         confirm.addActionListener(new ActionListener(){  
             public void actionPerformed(ActionEvent e){  
                 //code goes here
@@ -204,7 +276,7 @@ public class Blackjack {
     // }
 
     public static void round(){
-
+        System.out.println(hand);
 
         //resets the game
         reset();
@@ -215,54 +287,17 @@ public class Blackjack {
 
         botHand.add(chooseCard(false));
         
-        hitButton.addActionListener(new ActionListener(){  
-            public void actionPerformed(ActionEvent e){  
-                //code goes here
-                try{
-                    chooseCard(true);
-                    if(total>21){
-                        hitButton.setVisible(false);
-                        standButton.setVisible(false);
-                        while(botTotal < 17){
-                            botHand.add(chooseCard(false));
-                            //System.out.println(botHand + " " + botTotal);
-                        }
-                        message.setVisible(true);
-                        check();
-                    }
-                }
-                catch(Exception ex){
-                    System.err.println("Something went wrong.");
-                }
-                //System.out.println(hand + " " + total);
-            }
-        });
-        standButton.addActionListener(new ActionListener(){  
-            public void actionPerformed(ActionEvent e){  
-                //code goes here
-                try{
-                    hitButton.setVisible(false);
-                    standButton.setVisible(false);
-                    while(botTotal < 17){
-                        botHand.add(chooseCard(false));
-                        //System.out.println(botHand + " " + botTotal);
-                    }
-                    message.setVisible(true);
-                    check();
-                }
-                catch(Exception ex){
-                    System.err.println("Something went wrong.");
-                }
-                //System.out.println(hand + " " + total);
-            }
-        });
+        
 
         
         //round();
     
     }
     
-    public static String check(){
+    /**
+     * Checks for who won
+     */
+    public static void check(){
         
         if(total == 21){
             if(botTotal == 21){
@@ -299,7 +334,8 @@ public class Blackjack {
         moneys.setText("Bal: "+bal);
         betDisplay.setText("Bet: 0");
         bet = 0;
-        return null;
+        resetButton.setVisible(true);
+        
     }
 
     /**
@@ -450,6 +486,15 @@ public class Blackjack {
     public static void reset(){
         String c;
 
+        resetButton.setVisible(true);
+
+        playerCardsBox.setText("");
+        playerTotalBox.setText("Total: ");
+        botCardsBox.setText("");
+        botTotalBox.setText("Total: ");
+
+        hitButton.setVisible(true);
+        standButton.setVisible(true);
         //System.out.println(color.Reset);
 
         hand.clear();
