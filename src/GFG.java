@@ -35,12 +35,6 @@ public class GFG extends JFrame{
 
                 }
             });
-
-
-
-
-
-            
         }
 
         public static void play(JFrame frame){

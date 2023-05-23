@@ -455,6 +455,7 @@ public class Blackjack {
         //System.out.println("You win!");
         //Win bet x2
         message.setText("You win!");
+        message.setForeground(Color.green);
         bal += bet;
     }
 
@@ -462,12 +463,14 @@ public class Blackjack {
         //System.out.println("You lose");
         //Lose bet
         message.setText("You lose.");
+        message.setForeground(Color.red);
         bal -= bet;
     }
 
     public static void tie(){
         //System.out.println("You tied");
         //Return ballance (do nothing)
+        message.setForeground(Color.black);
         message.setText("You tied");
     }
 
@@ -477,7 +480,7 @@ public class Blackjack {
     public static void reset(){
         String c;
 
-        resetButton.setVisible(true);
+        //resetButton.setVisible(true);
 
         playerCardsBox.setText("");
         playerTotalBox.setText("Total: ");
