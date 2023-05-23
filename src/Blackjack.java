@@ -31,7 +31,7 @@ public class Blackjack {
     private static ArrayList<String> botHand = new ArrayList<>();
 
     private static Random rand = new Random();
-    private static Scanner in = new Scanner(System.in);
+    //private static Scanner in = new Scanner(System.in);
 
     public static int total = 0;
     public static int botTotal = 0;
@@ -170,8 +170,6 @@ public class Blackjack {
         frame.add(playerCardsPrompt);
         frame.add(playerTotalBox);
         frame.add(playerCardsBox);
-        // hand.add(chooseCard());
-        // hand.add(chooseCard());
 
         betDisplay.setBounds(400,0,100,25);
         betDisplay.setVisible(true);
@@ -205,6 +203,9 @@ public class Blackjack {
         prompt.setEditable(false);
         frame.setVisible(true);
 
+        hitButton.setBackground(Color.green);
+        standButton.setBackground(Color.red);
+
         resetButton.addActionListener(new ActionListener(){  
             public void actionPerformed(ActionEvent e){  
                 //code goes here
@@ -225,7 +226,6 @@ public class Blackjack {
                 catch(Exception ex){
                     System.err.println("Something went wrong.");
                 }
-                //System.out.println(hand + " " + total);
             }
         });
 
@@ -271,12 +271,8 @@ public class Blackjack {
 
     }
 
-    // public static void init(){
-
-    // }
-
     public static void round(){
-        System.out.println(hand);
+        //System.out.println(hand);
 
         //resets the game
         reset();
@@ -287,11 +283,6 @@ public class Blackjack {
 
         botHand.add(chooseCard(false));
         
-        
-
-        
-        //round();
-    
     }
     
     /**
