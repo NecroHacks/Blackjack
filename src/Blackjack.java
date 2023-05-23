@@ -1,34 +1,37 @@
 import java.awt.Color;
 import java.text.BreakIterator;
 import java.util.*;
+import java.util.concurrent.locks.StampedLock;
 import java.io.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-//TODO: change System.out.println(); to use GFG.java
+//TODO: change "System.out.println();" to use GFG.java
 
 public class Blackjack {
     static Colors color = new Colors();
 
     public static ArrayList<String> suits = new ArrayList<String>() {
+        //using colors instead, might switch to something else like {c,h,s,d} to make it easier on GUI
         {
-            add(color.Red);
-            add(color.Yellow);
-            add(color.Cyan);
-            add(color.Green);
+            add("♥");
+            add("♦");
+            add("♣");
+            add("♠");
         }
     };
+
     //Cards, value of cards, and cards with suites to differentiate.
-    public static ArrayList<Integer> num = new ArrayList<>();
-    public static ArrayList<String> cards = new ArrayList<>();
-    public static ArrayList<Integer> value = new ArrayList<>();
+    private static ArrayList<Integer> num = new ArrayList<>();
+    private static ArrayList<String> cards = new ArrayList<>();
+    private static ArrayList<Integer> value = new ArrayList<>();
 
-    public static ArrayList<String> hand = new ArrayList<>();
-    public static ArrayList<String> botHand = new ArrayList<>();
+    private static ArrayList<String> hand = new ArrayList<>();
+    private static ArrayList<String> botHand = new ArrayList<>();
 
-    public static Random rand = new Random();
-    public static Scanner in = new Scanner(System.in);
+    private static Random rand = new Random();
+    private static Scanner in = new Scanner(System.in);
 
     public static int total = 0;
     public static int botTotal = 0;
@@ -36,9 +39,18 @@ public class Blackjack {
     public static int botAce = 0;
     public static int bet;
     public static int bal = 100;
-
+    private static int i = 0;
     public static JFrame frame;
 
+    private static JTextField playerCardsBox = new JTextField();
+    private static JTextField playerTotalBox = new JTextField();
+
+    private static JTextField botCardsBox = new JTextField();
+    private static JTextField botTotalBox = new JTextField();
+
+    private static JButton hitButton = new JButton();
+    private static JButton standButton = new JButton();
+    private static boolean play;
     public static void main(String[] args) {}
 
     public static void game(JFrame f){
@@ -52,11 +64,56 @@ public class Blackjack {
         // textFieldUserName.setBackground(Color.red);
         // frame.add(textFieldUserName);
 
-        //player
-        //draws two cards
-        
+        hitButton.setText("Hit");
+        standButton.setText("Stand");
+        hitButton.setBounds(100,200,100,50);
+        standButton.setBounds(300,200,100,50);
 
+
+        frame.add(hitButton);
+        frame.add(standButton);
+        hitButton.setVisible(false);
+        standButton.setVisible(false);
+
+        JTextField playerCardsPrompt = new JTextField();
+        JTextField botCardsPrompt = new JTextField();
+
+        playerCardsPrompt.setBounds(200, 130, 100, 20);
+        playerCardsPrompt.setEditable(false);
+        playerCardsPrompt.setVisible(false);
+        playerCardsPrompt.setText("Cards:");
+
+        playerCardsBox.setBounds(200, 150, 100, 50);
+        playerCardsBox.setEditable(false);
+        playerCardsBox.setVisible(false);
+        playerCardsBox.setText("");
         
+        playerTotalBox.setBounds(200, 200, 100, 20);
+        playerTotalBox.setEditable(false);
+        playerTotalBox.setVisible(false);
+        playerTotalBox.setText("");
+
+        botCardsPrompt.setBounds(200, 230, 100, 20);
+        botCardsPrompt.setEditable(false);
+        botCardsPrompt.setVisible(false);
+        botCardsPrompt.setText("Dealer:");
+
+        botCardsBox.setBounds(200, 250, 100, 50);
+        botCardsBox.setEditable(false);
+        botCardsBox.setVisible(false);
+        botCardsBox.setText("");
+        
+        botTotalBox.setBounds(200, 300, 100, 20);
+        botTotalBox.setEditable(false);
+        botTotalBox.setVisible(false);
+        botTotalBox.setText("");
+
+        frame.add(botCardsPrompt);
+        frame.add(botTotalBox);
+        frame.add(botCardsBox);
+        frame.add(playerCardsPrompt);
+        frame.add(playerTotalBox);
+        frame.add(playerCardsBox);
         // hand.add(chooseCard());
         // hand.add(chooseCard());
         JTextField moneys = new JTextField();
@@ -79,9 +136,9 @@ public class Blackjack {
         JButton confirm = new JButton("Confirm");
         JTextField totalBet = new JTextField(" ");
         JTextArea prompt = new JTextArea("Enter bet:");
-        confirm.setBounds(150,225,200,25);
+        confirm.setBounds(150,225,200,25);  //(xpos, ypos, xsize, ysize)
         totalBet.setBounds(150,200,200,25); //(xpos, ypos, xsize, ysize)
-        prompt.setBounds(150,150,200,50); 
+        prompt.setBounds(150,150,200,50);   //(xpos, ypos, xsize, ysize)
 
         //totalBet.setBackground(Color.black); //Textbox
         //totalBet.setForeground(Color.white); //Text
@@ -91,7 +148,6 @@ public class Blackjack {
         frame.add(confirm);
         totalBet.setText(null);
 
-        
         prompt.setEditable(false);
         frame.setVisible(true);
 
@@ -109,14 +165,24 @@ public class Blackjack {
                         confirm.setVisible(false);
                         totalBet.setVisible(false);
                         prompt.setVisible(false); 
+                        playerCardsBox.setVisible(true);
+                        playerTotalBox.setVisible(true);
+                        playerCardsPrompt.setVisible(true);
+
+                        botCardsPrompt.setVisible(true);
+                        botTotalBox.setVisible(true);
+                        botCardsBox.setVisible(true);
+
+                        hitButton.setVisible(true);
+                        standButton.setVisible(true);
+                        
+
+                        play = true;
+
                         round();
-                        JLabel ace = new JLabel(new ImageIcon("C:/Users/necro/vsproj/src/smol-ace-1.png"));
-                        ace.setBounds(0,0,400,400);
-                        frame.add(ace);
-                        //ace.setVisible(true);
-                        ace.setText("");
                     }
                 }
+
                 catch(Exception ex){
                     prompt.setText("Enter bet:\nEnter a number between 0 and "+bal);
                 }
@@ -143,22 +209,51 @@ public class Blackjack {
 
         botHand.add(chooseCard(false));
         
+        hitButton.addActionListener(new ActionListener(){  
+            public void actionPerformed(ActionEvent e){  
+                //code goes here
+                try{
+                    chooseCard(true);
+                    if(total>21){
+                        hitButton.setVisible(false);
+                        standButton.setVisible(false);
+                        while(botTotal < 17){
+                            botHand.add(chooseCard(false));
+                            System.out.println(botHand + " " + botTotal);
+                        }
+                    }
+                }
+                catch(Exception ex){
+                    System.err.println("Something went wrong.");
+                }
+                System.out.println(hand + " " + total);
+            }
+        });
+        standButton.addActionListener(new ActionListener(){  
+            public void actionPerformed(ActionEvent e){  
+                //code goes here
+                try{
+                    hitButton.setVisible(false);
+                    standButton.setVisible(false);
+                    while(botTotal < 17){
+                        botHand.add(chooseCard(false));
+                        System.out.println(botHand + " " + botTotal);
+                        
+                    }
+                }
+                catch(Exception ex){
+                    System.err.println("Something went wrong.");
+                }
+                System.out.println(hand + " " + total);
+            }
+        });
 
         System.out.println(hand + " " + total);
         System.out.println(botHand + " " + botTotal);
-
-        /*while(total < 21){
-            if(!play()){
-                break;
-            }
-            System.out.println(hand + " " + total);
-        }
+        
         //add bot
-        while(botTotal < 17){
-            botHand.add(chooseCard(false));
-            System.out.println(botHand + " " + botTotal);
-            
-        }
+        
+         
 
         if(total == 21){
             if(botTotal == 21){
@@ -193,7 +288,7 @@ public class Blackjack {
             }
         }
         
-        round();*/
+        //round();
     
     }
     
@@ -210,9 +305,14 @@ public class Blackjack {
 
         if(player){ 
             calcTotal(value.get(num.get(i)));
+            playerTotalBox.setText("Total: " + total);
+            playerCardsBox.setText(playerCardsBox.getText()+" "+card);
+            
         }
         else{
             calcBotTotal(value.get(num.get(i)));
+            botTotalBox.setText("Total: " + botTotal);
+            botCardsBox.setText(botCardsBox.getText()+" "+card);
         }
         num.remove(i);
         //System.out.println(num);
@@ -281,27 +381,36 @@ public class Blackjack {
     }
 
     //Starts the play
-    public static boolean play(){
-        JButton hit = new JButton("Hit");
-        JButton stand = new JButton("Stand");
+    /*public static boolean play(){
+        //JButton hit = new JButton("Hit");
+        //JButton stand = new JButton("Stand");
         
-        hit.setBounds(null);
-        
-        //System.out.println("Hit(h) or Stand(s)?");
-        String act = in.nextLine();
-        if(act.toLowerCase().equals("h")){
-            hand.add(chooseCard(true));
-            return true;
-        } 
-        else if(act.toLowerCase().equals("s")){
-            return false;
-        }
-        else{
-            System.out.println("Enter a valid response");
-            return true;
-        }
-
-    }
+        hitButton.addActionListener(new ActionListener(){  
+            public void actionPerformed(ActionEvent e){  
+                //code goes here
+                try{
+                    play = true;
+                    System.out.print("stgrdg");
+                }
+                catch(Exception ex){
+                    System.err.println("Something went wrong.");
+                }
+            }
+        });
+        standButton.addActionListener(new ActionListener(){  
+            public void actionPerformed(ActionEvent e){  
+                //code goes here
+                try{
+                    play = false;
+                }
+                catch(Exception ex){
+                    System.err.println("Something went wrong.");
+                }
+            }
+        });
+        //while(i!=0){return play;}
+        //return false;
+    }*/
 
     //I feel like these are self explanitory
     //TODO: changes sysouts to display on screen
@@ -343,25 +452,29 @@ public class Blackjack {
 
                 if(j == 1){
                     value.add(1);
-                    c = (suits.get(i) + "A" + color.Reset);
+                    c = (suits.get(i) + "A");
+                    
                 }
                 else if(j>=11){
                     value.add(10);
                     if(j==11){
-                        c = (suits.get(i) + "J" + color.Reset);
+                        c = (suits.get(i) + "J");
+                        
                     }
                     else if(j==12){
-                        c = (suits.get(i) + "Q" + color.Reset);
+                        c = (suits.get(i) + "Q");
+                        
                     }
                     else{
-                        c = (suits.get(i) + "K" + color.Reset);
+                        c = (suits.get(i) + "K");
+                        
                     }
                 }
                 
                 else{
                     value.add(j);
-    
-                    c = (suits.get(i) + j +color.Reset);
+                    
+                    c = (suits.get(i) + j);
                 }
                 
                 cards.add(c);
